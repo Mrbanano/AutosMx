@@ -27,7 +27,7 @@ const dataSearch = {
 
 // Events
 document.addEventListener('DOMContentLoaded', () => {
-  showCars();
+  showCars(cars);
   fillYear();
 });
 
@@ -37,33 +37,52 @@ marcaSelect.addEventListener('change', (e) => {
   filterData();
 });
 yearSelect.addEventListener('change', (e) => {
-  dataSearch.year = e.target.value;
+  dataSearch.year = parseInt(e.target.value);
+  filterData();
 });
 minPrecioSelect.addEventListener('change', (e) => {
   dataSearch.minPrecio = e.target.value;
+  filterData();
 });
 maxPrecioSelect.addEventListener('change', (e) => {
   dataSearch.maxPrecio = e.target.value;
+  filterData();
 });
 puertasSelect.addEventListener('change', (e) => {
-  dataSearch.puertas = e.target.value;
+  dataSearch.puertas = parseInt(e.target.value);
+  filterData();
 });
 transmisionSelect.addEventListener('change', (e) => {
   dataSearch.transmision = e.target.value;
+  filterData();
 });
 colorSelect.addEventListener('change', (e) => {
   dataSearch.color = e.target.value;
-  console.log(dataSearch);
+  filterData();
 });
 
 // Funtions
-function showCars() {
+function showCars(cars) {
+  cleanResultContainer();
   cars.forEach((car) => {
     const carHtml = document.createElement('div');
     carHtml.className = 'Card';
     carHtml.innerHTML = cardCar(car);
     resultContainer.appendChild(carHtml);
   });
+}
+function noFoundCars() {
+  cleanResultContainer();
+  const carHtml = document.createElement('div');
+  carHtml.className = 'Card-Empty';
+  carHtml.innerHTML = emptyCardCar();
+  resultContainer.appendChild(carHtml);
+}
+
+function cleanResultContainer() {
+  while (resultContainer.firstChild) {
+    resultContainer.removeChild(resultContainer.firstChild);
+  }
 }
 
 function fillYear() {
@@ -76,39 +95,72 @@ function fillYear() {
 }
 
 function filterData() {
-  const result = cars.filter(filterMarca);
-  console.log(result);
+  const result = cars
+    .filter(filterMarca)
+    .filter(filterYear)
+    .filter(filterMin)
+    .filter(filterMax)
+    .filter(filterPuertas)
+    .filter(filterColor)
+    .filter(filterTransmision);
+
+  if (result.length > 0) {
+    showCars(result);
+  } else {
+    noFoundCars();
+  }
 }
 
 // Higher-Order Functions
 function filterMarca(car) {
   const { marca } = dataSearch;
   if (marca) {
-    return car.marca == marca;
+    return car.marca === marca;
   }
   return car;
 }
 
-//utils
-const cardCar = (car) => {
-  const { image, marca, modelo, year, precio, puertas, color, transmision } =
-    car;
-  return `
-    <div class="Card-content">
-        <div class="Card-content">
-            <div class="Card-images">
-                <img src="${image}" alt="autosMx Vende este carro ${marca} modelo ${modelo} contactanos para mas informacion">
-            </div>
-            <div class="Card-body">
-                <p class="Card-Car-marca">${marca}</p>
-                <p class="Card-Car-year">${year}</p>
-                <p class="Card-Car-modelo">${modelo}</p>
-                <p class="Card-Car-precio">${precio}</p>
-                <p class="Card-Car-puertas">${puertas}</p>
-                <p class="Card-Car-color">${color}</p>
-                <p class="Card-Car-transmision">${transmision}</p>
-            </div>
-        </div>
-    </div>
-    `;
-};
+function filterYear(car) {
+  const { year } = dataSearch;
+  if (year) {
+    return car.year === year;
+  }
+  return car;
+}
+
+function filterMin(car) {
+  const { minPrecio } = dataSearch;
+  if (minPrecio) {
+    return car.precio >= minPrecio;
+  }
+  return car;
+}
+function filterMax(car) {
+  const { maxPrecio } = dataSearch;
+  if (maxPrecio) {
+    console.log(maxPrecio);
+    return car.precio <= maxPrecio;
+  }
+  return car;
+}
+function filterPuertas(car) {
+  const { puertas } = dataSearch;
+  if (puertas) {
+    return car.puertas === puertas;
+  }
+  return car;
+}
+function filterColor(car) {
+  const { color } = dataSearch;
+  if (color) {
+    return car.color === color;
+  }
+  return car;
+}
+function filterTransmision(car) {
+  const { transmision } = dataSearch;
+  if (transmision) {
+    return car.transmision === transmision;
+  }
+  return car;
+}
