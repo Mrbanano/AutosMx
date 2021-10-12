@@ -1,0 +1,12 @@
+.Filter {
+  border: 2px solid black;
+  padding-inline: 8px;
+}
+
+.Search-container {
+  border: 2px solid pink;
+}
+
+.Search-control {
+  border: 2px solid red;
+}

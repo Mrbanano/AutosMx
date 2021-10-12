@@ -1,6 +1,7 @@
 // Variables
 
 //getelements
+//Select
 const marcaSelect = document.getElementById('marca');
 const yearSelect = document.getElementById('year');
 const minPrecioSelect = document.getElementById('minimo');
@@ -8,11 +9,18 @@ const maxPrecioSelect = document.getElementById('maximo');
 const puertasSelect = document.getElementById('puertas');
 const colorSelect = document.getElementById('color');
 const transmisionSelect = document.getElementById('transmision');
+//Container
 const resultContainer = document.getElementById('result');
-
+const countSpan = document.getElementById('count');
 //DateCreate
-const maxYear = new Date().getFullYear();
+const maxYear = new Date().getFullYear() + 1;
 const minYear = maxYear - 10;
+// Current
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0,
+});
 
 //Search Object
 const dataSearch = {
@@ -28,7 +36,9 @@ const dataSearch = {
 // Events
 document.addEventListener('DOMContentLoaded', () => {
   showCars(cars);
+  fillMarca();
   fillYear();
+  fillPrecios();
 });
 
 //EventListener Selects
@@ -62,8 +72,15 @@ colorSelect.addEventListener('change', (e) => {
 });
 
 // Funtions
+
+function countResult(result) {
+  const count = result.length;
+  countSpan.innerText = count;
+}
+
 function showCars(cars) {
   cleanResultContainer();
+  countResult(cars);
   cars.forEach((car) => {
     const carHtml = document.createElement('div');
     carHtml.className = 'Card';
@@ -94,6 +111,37 @@ function fillYear() {
   }
 }
 
+function fillMarca() {
+  let Options = [];
+  cars.forEach((car) => {
+    const { marca } = car;
+    const found = Options.includes(marca);
+    if (!found) {
+      Options.push(marca);
+    }
+  });
+  const options = Options.sort();
+  options.forEach((option) => {
+    const marcaOption = document.createElement('option');
+    marcaOption.value = option;
+    marcaOption.textContent = option;
+    marcaSelect.appendChild(marcaOption);
+  });
+}
+
+function fillPrecios() {
+  for (let i = minPrecioInitial; i < maxPrecioInitial + 10000; i += 10000) {
+    const minPrecioOption = document.createElement('option');
+    const maxPrecioOption = document.createElement('option');
+    minPrecioOption.value = i;
+    maxPrecioOption.value = i;
+    minPrecioOption.textContent = formatter.format(i);
+    maxPrecioOption.textContent = formatter.format(i);
+    minPrecioSelect.appendChild(minPrecioOption);
+    maxPrecioSelect.appendChild(maxPrecioOption);
+  }
+}
+
 function filterData() {
   const result = cars
     .filter(filterMarca)
@@ -108,6 +156,7 @@ function filterData() {
     showCars(result);
   } else {
     noFoundCars();
+    countResult([]);
   }
 }
 
@@ -138,7 +187,6 @@ function filterMin(car) {
 function filterMax(car) {
   const { maxPrecio } = dataSearch;
   if (maxPrecio) {
-    console.log(maxPrecio);
     return car.precio <= maxPrecio;
   }
   return car;

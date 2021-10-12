@@ -1,12 +1,11 @@
 //utils
 const cardCar = (car) => {
-  const { image, marca, modelo, year, precio, puertas, color, transmision } =
-    car;
+  const { url, marca, modelo, year, precio, puertas, color, transmision } = car;
   return `
-      <div class="Card-content">
+      <div class="Card-container">
           <div class="Card-content">
               <div class="Card-images">
-                  <img src="${image}" alt="autosMx Vende este carro ${marca} modelo ${modelo} contactanos para mas informacion">
+                  <img src="${url}" alt="autosMx Vende este carro ${marca} modelo ${modelo} contactanos para mas informacion">
               </div>
               <div class="Card-body">
                   <p class="Card-Car-marca">${marca}</p>

@@ -1,4 +1,22 @@
-.Card {
-  border: 2px solid black;
-  margin-block: 20px;
+@import url('./Header.css');
+@import url('./Filter.css');
+@import url('./Form.css');
+@import url('./Result.css');
+@import url('./Card.css');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}
+.Container {
+  margin-inline: auto;
+  max-inline-size: 1320px;
+
+  border: 2px solid red;
+}
+
+img {
+  inline-size: 90%;
+  max-inline-size: 400px;
 }
